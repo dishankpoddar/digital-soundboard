@@ -5,6 +5,8 @@ var tag = document.createElement('script');
 tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+var ready = 0;
+var vcount = 0;
 
 // Get playlist videos
 async function getYouTubePlaylistVideos(playlistId, apiKey) {
@@ -44,6 +46,7 @@ let playerList = new Object();
 getYouTubePlaylistVideos(playlistId, apiKey).then(videos => {
     let board = document.querySelector('#board');
     let rows = Math.ceil(videos.length/4);
+    vcount = videos.length;
     for (let i = 0; i < rows; i++){
         let row = `
             <div class="card-deck" >
@@ -114,6 +117,14 @@ function onPlayerReady(event) {
   event.target.playVideo();
   event.target.stopVideo(); 
   event.target.setVolume(50);
+  ready += 1;
+  if (ready == vcount){
+    let alertBox = document.querySelector('#alertBox');
+    alertBox.classList.remove('alert-warning');
+    alertBox.classList.add('alert-success');
+    alertBox.textContent = 'Playlist Loaded';
+    setTimeout(function(){alertBox.style.display='none';}, 2000);
+  }
 }
 
 
