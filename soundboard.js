@@ -130,7 +130,7 @@ function onPlayerReady(event) {
   ready += 1;
   if (ready == vcount){
     let alertBox = document.querySelector('#alertBox');
-    alertBox.classList.vwove('alert-warning');
+    alertBox.classList.remove('alert-warning');
     alertBox.classList.add('alert-success');
     alertBox.textContent = 'Playlist Loaded';
     setTimeout(function(){alertBox.style.display='none';}, 2000);
