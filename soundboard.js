@@ -112,6 +112,7 @@ window.onload = getYouTubePlaylistVideos(playlistId, apiKey).then(videos => {
             },
             events: {
                 'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange,
             },
           });
     });
@@ -132,27 +133,41 @@ function onPlayerReady(event) {
   }
 }
 
+function onPlayerStateChange(event){
+    let player = event.target;
+    let playpauseIcon = document.querySelector(`#play-pause-${player.playerInfo.videoData.video_id}`);
+    
+    if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+        playpauseIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 0 24 24" width="2rem" fill="#DF9D9B"><path d="M0 0h24v24H0z" fill="none"/><path d="M8 5v14l11-7z"/></svg>`;
+    }
+    else if (player.getPlayerState() == YT.PlayerState.BUFFERING){
+        playpauseIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 0 24 24" width="40px" fill="#DF9D9B"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>`;
+    }
+    else {
+        playpauseIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 0 24 24" width="2rem" fill="#DF9D9B"><path d="M0 0h24v24H0z" fill="none"/><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+    }
+}
 
 // Control a video's playback.
 function playpauseVideo(video_id){
     let player = playerList[video_id];
-    let playpauseIcon = document.querySelector(`#play-pause-${video_id}`);
+    // let playpauseIcon = document.querySelector(`#play-pause-${video_id}`);
     if (player.getPlayerState() == YT.PlayerState.PLAYING) {
         player.pauseVideo();
-        playpauseIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 0 24 24" width="2rem" fill="#DF9D9B"><path d="M0 0h24v24H0z" fill="none"/><path d="M8 5v14l11-7z"/></svg>`;
+        // playpauseIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 0 24 24" width="2rem" fill="#DF9D9B"><path d="M0 0h24v24H0z" fill="none"/><path d="M8 5v14l11-7z"/></svg>`;
     } else {
         player.playVideo();
-        while (player.getPlayerState() == YT.PlayerState.BUFFERING) {
-            playpauseIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 0 24 24" width="40px" fill="#DF9D9B"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>`;
-        }
-        playpauseIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 0 24 24" width="2rem" fill="#DF9D9B"><path d="M0 0h24v24H0z" fill="none"/><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+        // while (player.getPlayerState() == YT.PlayerState.BUFFERING) {
+        //     playpauseIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 0 24 24" width="40px" fill="#DF9D9B"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>`;
+        // }
+        // playpauseIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 0 24 24" width="2rem" fill="#DF9D9B"><path d="M0 0h24v24H0z" fill="none"/><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
     } 
 }
 function stopVideo(video_id){
     let player = playerList[video_id];
     player.stopVideo();
-    let playpauseIcon = document.querySelector(`#play-pause-${video_id}`);
-    playpauseIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 0 24 24" width="2rem" fill="#DF9D9B"><path d="M0 0h24v24H0z" fill="none"/><path d="M8 5v14l11-7z"/></svg>`;
+    // let playpauseIcon = document.querySelector(`#play-pause-${video_id}`);
+    // playpauseIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 0 24 24" width="2rem" fill="#DF9D9B"><path d="M0 0h24v24H0z" fill="none"/><path d="M8 5v14l11-7z"/></svg>`;
 }
 function volumeUp(video_id){
     let player = playerList[video_id];
