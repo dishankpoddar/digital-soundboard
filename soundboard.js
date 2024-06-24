@@ -70,9 +70,6 @@ window.onload = getYouTubePlaylistVideos(playlistId, apiKey).then(videos => {
                         <button type="button" class="btn btn-dark p-0" onclick="playpauseVideo('${video.id}')">
                             <span id="play-pause-${video.id}">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 0 24 24" width="2rem" fill="#DF9D9B"><path d="M0 0h24v24H0z" fill="none"/><path d="M8 5v14l11-7z"/></svg>
-                                <!--
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 0 24 24" width="2rem" fill="#DF9D9B"><path d="M0 0h24v24H0z" fill="none"/><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                                -->
                             </span>
                         </button>
                         <button type="button" class="btn btn-dark p-0" onclick="stopVideo('${video.id}')">
@@ -120,8 +117,6 @@ window.onload = getYouTubePlaylistVideos(playlistId, apiKey).then(videos => {
 
 // The API will call this function when the video player is ready.
 function onPlayerReady(event) {
-  event.target.playVideo();
-  event.target.stopVideo();
   event.target.setVolume(50);
   ready += 1;
   if (ready == vcount){
@@ -153,9 +148,14 @@ function playpauseVideo(video_id){
     let player = playerList[video_id];
     if (player.getPlayerState() == YT.PlayerState.PLAYING) {
         player.pauseVideo();
-    } else {
+    } else if (player.getPlayerState() == YT.PlayerState.PAUSED) {
         player.playVideo();
-    } 
+    }  else if (player.getPlayerState() == YT.PlayerState.BUFFERING) {
+       // do nothing 
+    }  else {
+        player.seekTo(0, true);
+        player.playVideo();
+    }
 }
 function stopVideo(video_id){
     let player = playerList[video_id];
